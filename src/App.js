@@ -42,7 +42,8 @@ class App extends Component {
         <input type='text' value={this.state.input} onChange={e => this.setState({input: e.target.value})}></input>
         <button onClick={this.addTask.bind(this, this.state.input)}>Add Task</button>
         <ul>
-          {this.state.tasks.map(task => <li key={task.id}>{task.name}</li>)}
+          {this.state.tasks.map(task => 
+          <li key={task.id}>{task.name}<button onClick={this.deleteTask.bind(this, task.id)}>delete</button></li>)}
         </ul>
       </div>
     );
