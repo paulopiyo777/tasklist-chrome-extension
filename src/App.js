@@ -4,12 +4,37 @@ import './App.css';
 import TaskList from './components/TaskList';
 import TaskInput from './components/TaskInput';
 
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
 class App extends Component {
   state = {
     tasks: [],
-    idCount: 0,
+    idCount: "0",
     input: ''
   }
+
+  onDragEnd(result) {
+     // dropped outside the list
+      if (!result.destination) {
+        return;
+      }
+
+      const tasks = reorder(
+        this.state.tasks,
+        result.source.index,
+        result.destination.index
+      );
+
+      this.setState({
+        tasks,
+      });
+    }
 
   // addTask: creates a new task with a unique ID; keeps track of previous state's ID
   addTask(taskName) {
@@ -45,7 +70,8 @@ class App extends Component {
       <div className='App'>
         <Card className='main-container'>
           <TaskInput handleSubmit={this.addTask.bind(this)} />
-          <TaskList data={this.state.tasks} handleClick={this.deleteTask.bind(this)}/>
+          <TaskList data={this.state.tasks} handleClick={this.deleteTask.bind(this)}
+            onDragEnd={this.onDragEnd.bind(this)}/>
         </Card>
       </div>
     );
