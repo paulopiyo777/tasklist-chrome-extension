@@ -12,6 +12,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
+
 class App extends Component {
   state = {
     tasks: [],
@@ -34,6 +35,9 @@ class App extends Component {
       this.setState({
         tasks,
       });
+
+      // localStorage only supports strings
+      localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
   // addTask: creates a new task with a unique ID; keeps track of previous state's ID
@@ -44,6 +48,10 @@ class App extends Component {
         name: taskName,
         id: prevState.idCount
       })
+
+      localStorage.setItem('tasks', JSON.stringify(newTasks));
+      localStorage.setItem('idCount', prevState.idCount);
+
       // return new state object with new task and unique ID incremented by 1
       return {
         tasks: newTasks,
@@ -58,10 +66,21 @@ class App extends Component {
     this.setState(prevState => {
       // keep tasks with IDs different from ID to be deleted; delete task with ID
       const newTasks = prevState.tasks.slice().filter( task => task.id !== taskId);
+      localStorage.setItem("tasks", JSON.stringify(newTasks));
+
 
       return {
         tasks: newTasks
       }
+    })
+  }
+
+  componentDidMount() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const idCount = localStorage.getItem('idCount') || '0';
+    this.setState({
+      tasks,
+      idCount,
     })
   }
 
